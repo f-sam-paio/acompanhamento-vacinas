@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Vacinas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Lista de Vacinas</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Idade Recomendada</th>
+                    <th>Doses</th>
+                    <th>Rede Disponível</th>
+                    <th>Doença Prevenida</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vacina in vacinas %}
+                <tr>
+                    <td>{{ vacina.nome }}</td>
+                    <td>{{ vacina.idade_recomendada }}</td>
+                    <td>{{ vacina.doses }}</td>
+                    <td>{{ vacina.rede_disponivel }}</td>
+                    <td>{{ vacina.doenca_prevenida }}</td>
+                    <td>
+                        <a href="{{ url_for('editar_vacina', id=vacina.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                        <form action="{{ url_for('excluir_vacina', id=vacina.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta vacina?')">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('cadastrar_vacina') }}" class="btn btn-primary mb-3">Cadastrar Nova Vacina</a>
+    </div>
+</body>
+</html>
