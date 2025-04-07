@@ -9,17 +9,17 @@
 <body>
     <div class="container mt-4">
         <h2>Editar Vacina</h2>
-        <form method="POST">
+        <form action="{{ url_for('editar_vacina', tipo=tipo, id=vacina.id) }}" method="POST">
             <div class="mb-3">
-                <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nome" name="nome" value="{{ vacina.nome }}" required>
+                <label for="nome_vacina" class="form-label">Nome da Vacina</label>
+                <input type="text" class="form-control" id="nome_vacina" name="nome_vacina" value="{{ vacina.nome_vacina }}" required>
             </div>
             <div class="mb-3">
                 <label for="idade_recomendada" class="form-label">Idade Recomendada</label>
                 <input type="text" class="form-control" id="idade_recomendada" name="idade_recomendada" value="{{ vacina.idade_recomendada }}" required>
             </div>
             <div class="mb-3">
-                <label for="doses" class="form-label">Doses</label>
+                <label for="doses" class="form-label">Número de Doses</label>
                 <input type="number" class="form-control" id="doses" name="doses" value="{{ vacina.doses }}" required>
             </div>
             <div class="mb-3">
@@ -27,14 +27,20 @@
                 <input type="text" class="form-control" id="rede_disponivel" name="rede_disponivel" value="{{ vacina.rede_disponivel }}" required>
             </div>
             <div class="mb-3">
-                <label for="doenca_prevenida" class="form-label">Doença Prevenida</label>
+                <label for="doenca_prevenida" class="form-label">Doença(s) Prevenida(s)</label>
                 <input type="text" class="form-control" id="doenca_prevenida" name="doenca_prevenida" value="{{ vacina.doenca_prevenida }}" required>
             </div>
-            <button type="submit" class="btn btn-primary">Salvar alterações</button>
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo de Vacina</label>
+                <select class="form-select" id="tipo" name="tipo" required>
+                    <option value="crianca" {% if vacina.__class__.__name__ == 'VacinaCrianca' %}selected{% endif %}>Criança</option>
+                    <option value="adolescente" {% if vacina.__class__.__name__ == 'VacinaAdolescente' %}selected{% endif %}>Adolescente</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
         </form>
-        <a href="/vacinas" class="btn btn-link mt-3">Voltar para a lista de vacinas</a>
+
+        <a href="{{ url_for('listar_vacinas_criancas') if tipo == 'crianca' else url_for('listar_vacinas_adolescentes') }}" class="btn btn-secondary mt-3">Voltar para a Lista de Vacinas</a>
     </div>
 </body>
 </html>
-
-

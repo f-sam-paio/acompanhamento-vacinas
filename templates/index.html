@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Bem-vindo ao Sistema de Acompanhamento de Vacinas</h1>
+
+        <!-- Botões de login e cadastro -->
+        <div class="mb-3">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login</a>
+            <a href="{{ url_for('auth.registro') }}" class="btn btn-outline-primary">Cadastrar-se</a>
+        </div>
+
+        <!-- Botões para consultar vacinas recomendadas -->
+        <div>
+            <a href="{{ url_for('listar_vacinas_criancas') }}" class="btn btn-primary btn-lg mb-3">Vacinas para Crianças (0 a 10 anos)</a>
+            <a href="{{ url_for('listar_vacinas_adolescentes') }}" class="btn btn-success btn-lg mb-3">Vacinas para Adolescentes (11 a 17 anos)</a>
+        </div>
+    </div>
+</body>
+</html>
+
+
