@@ -9,7 +9,7 @@ auth_bp = Blueprint('auth', __name__)
 @auth_bp.route('/registro', methods=['GET', 'POST'])
 def registro():
     if 'usuario_id' in session:
-        return redirect('/painel')
+        return redirect('/')
 
     if request.method == 'POST':
         nome = request.form['nome'].strip()
@@ -26,8 +26,9 @@ def registro():
 
         db.session.add(novo_usuario)
         db.session.commit()
+        
         flash('Cadastro realizado com sucesso! Faça login.', 'success')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('index')) # Redireciona para a home (pagina inicial)
 
     return render_template('register.html')
 
@@ -36,7 +37,7 @@ def registro():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if 'usuario_id' in session:
-        return redirect('/painel')
+        return redirect('/') # Redireciona para a home se já estiver logado
 
     if request.method == 'POST':
         email = request.form['email'].strip().lower()
@@ -47,7 +48,7 @@ def login():
             session['usuario_id'] = usuario.id
             session['is_admin'] = usuario.is_admin
             flash('Login realizado com sucesso!', 'success')
-            return redirect('/painel')
+            return redirect('/') # Redireciona para a home após login bem-sucedido
         else:
             flash('E-mail ou senha inválidos.', 'danger')
 
@@ -57,8 +58,22 @@ def login():
 # Rota de logout
 @auth_bp.route('/logout')
 def logout():
-    session.clear()
-    flash('Logout realizado com sucesso!', 'success')
-    return redirect(url_for('auth.login'))
+    session.clear() # Limpa a sessão ao fazer logout
+    flash('Logout realizado com sucesso!', 'success') # Exibe mensagem flash
+    return redirect(url_for('index'))  # Redireciona para a página inicial (home)
 
+#Rota exclusão de usuário - somente Admin
+@auth_bp.route('/excluir_usuario/<int:usuario_id>', methods=['POST'])
+def excluir_usuario(usuario_id):
+    if 'is_admin' not in session or not session['is_admin']:
+        flash('Ação permitida apenas para administradores.', 'danger')
+        return redirect(url_for('painel'))
+    
+    usuario = Usuario.query.get_or_404(usuario_id)
+    
+    # Deleta o usuário
+    db.session.delete(usuario)
+    db.session.commit()
 
+    flash('Usuário excluído com sucesso!', 'success')
+    return redirect(url_for('painel'))

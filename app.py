@@ -4,7 +4,6 @@ from database import db
 from models import VacinaCrianca, VacinaAdolescente, Crianca, Usuario
 from auth import auth_bp  # Importando o Blueprint de autenticação
 from datetime import datetime
-from importar_vacinas import importar_bp
 
 # Configuração do aplicativo Flask
 app = Flask(__name__)
@@ -13,7 +12,6 @@ db.init_app(app)
 
 # Registro do Blueprint de autenticação
 app.register_blueprint(auth_bp)  # Usa rotas diretas como /login e /registro
-app.register_blueprint(importar_bp)  # Tabela de vacinas
 
 # Página inicial
 @app.route('/')
@@ -46,12 +44,30 @@ def listar_vacinas_adolescentes():
 @app.route('/painel')
 def painel():
     if 'usuario_id' not in session:
-        return redirect(url_for('auth.login'))
-
+        return redirect(url_for('auth.login'))  # Redireciona para o login se o usuário não estiver logado
+    
     usuario = Usuario.query.get_or_404(session['usuario_id'])
-    criancas = Crianca.query.filter_by(usuario_id=usuario.id).all()
+    #criancas = Crianca.query.filter_by(usuario_id=usuario.id).all() - para entrega 4
 
-    return render_template('painel.html', usuario=usuario, criancas=criancas)
+       # Verifique se o usuário é admin
+    if usuario.is_admin:
+        # Se for admin, pega todos os usuários
+        usuarios = Usuario.query.all()
+    else:
+        usuarios = []
+
+    return render_template('painel.html', usuario=usuario, usuarios=usuarios) # adicionar criancas=criancas para entrega 4
+
+from flask import flash, redirect, url_for
+
+# rota para exclusão de usuário
+@app.route('/excluir_usuario/<int:usuario_id>', methods=['POST'])
+def excluir_usuario(usuario_id):
+    usuario = Usuario.query.get_or_404(usuario_id)
+    db.session.delete(usuario)
+    db.session.commit()
+    flash('Usuário excluído com sucesso!', 'success')
+    return redirect(url_for('painel'))  # Redireciona para o painel após a exclusão
 
 # Cadastro de criança/adolescente
 @app.route('/criancas/cadastrar', methods=['GET', 'POST'])
@@ -76,7 +92,7 @@ def cadastrar_crianca():
 
     return render_template('cadastrar_crianca.html')
 
-# Cadastro de vacina (Admin)
+# Rota para Cadastro de vacina (Admin)
 @app.route('/cadastrar', methods=['GET', 'POST'])
 def cadastrar_vacina():
     if request.method == 'POST':
@@ -111,7 +127,7 @@ def cadastrar_vacina():
 
     return render_template('cadastrar_vacina.html')
 
-# Edição de vacina (Admin)
+# Rota para editar vacina (Admin)
 @app.route('/vacinas/editar/<tipo>/<int:id>', methods=['GET', 'POST'])
 def editar_vacina(tipo, id):
     modelo = VacinaCrianca if tipo == 'crianca' else VacinaAdolescente
@@ -134,7 +150,7 @@ def editar_vacina(tipo, id):
 
     return render_template('editar_vacina.html', vacina=vacina, tipo=tipo)
 
-# Exclusão de vacina (Admin)
+# Rota para excluir vacina (Admin)
 @app.route('/vacinas/excluir/<tipo>/<int:id>', methods=['POST'])
 def excluir_vacina(tipo, id):
     modelo = VacinaCrianca if tipo == 'crianca' else VacinaAdolescente

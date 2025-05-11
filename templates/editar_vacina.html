@@ -37,7 +37,7 @@
                     <option value="adolescente" {% if vacina.__class__.__name__ == 'VacinaAdolescente' %}selected{% endif %}>Adolescente</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            <button type="submit" class="btn btn-success">Salvar Alterações</button>
         </form>
 
         <a href="{{ url_for('listar_vacinas_criancas') if tipo == 'crianca' else url_for('listar_vacinas_adolescentes') }}" class="btn btn-secondary mt-3">Voltar para a Lista de Vacinas</a>
