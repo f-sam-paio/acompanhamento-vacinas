@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Vacinas — {{ crianca.nome }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Gerenciar Vacinas para {{ crianca.nome }}</h2>
+
+    <!-- Mensagens flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <p><strong>Idade da criança:</strong> {{ idade_em_meses }} meses</p>
+
+    <form method="POST">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Vacina</th>
+                        <th>Idade Recomendada</th>
+                        <th>Rede Disponível</th>
+                        <th>Status</th>
+                        <th>Aplicada</th>            
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vacina in vacinas %}
+                        <tr>
+                            <td>{{ vacina.nome_vacina }}</td>
+                            <td>{{ vacina.idade_recomendada }} meses</td>
+                            <td>{{ vacina.rede_disponivel }}</td>
+                            <td>
+                                {% if vacina.idade_recomendada|int < idade_em_meses %}
+                                    <span class="badge bg-warning text-dark">Atrasada</span>
+                                {% elif vacina.idade_recomendada|int == idade_em_meses %}
+                                    <span class="badge bg-success">Idade Atual</span>
+                                {% else %}
+                                    <span class="badge bg-info text-dark">Futura</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <input type="checkbox" name="vacinas" value="{{ vacina.id }}"
+                                    {% if vacina.id in vacinas_aplicadas_ids %}checked{% endif %}>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar Vacinas Aplicadas</button>
+        <a href="{{ url_for('painel') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

@@ -3,12 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastrar Criança</title>
+    <title>Cadastrar Criança/Adolescente</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-4">
         <h2>Cadastro de Criança/Adolescente</h2>
+
+        <!-- Renderiza mensagens flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
         <form method="POST">
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome</label>
@@ -20,7 +33,7 @@
             </div>
             <button type="submit" class="btn btn-primary">Cadastrar</button>
         </form>
-        <a href="/criancas" class="btn btn-secondary mt-3">Voltar para a Lista</a>
+        <a href="{{ url_for('painel') }}" class="btn btn-secondary mt-3">Voltar para o Painel</a>
     </div>
 </body>
 </html>

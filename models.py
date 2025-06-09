@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import db
+from datetime import date
 from sqlalchemy.dialects.postgresql import ARRAY
 
 # Modelo de Usuário (Admin ou Usuário Comum)
@@ -47,3 +48,24 @@ class Crianca(db.Model):
     data_nascimento = db.Column(db.Date, nullable=False)
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
     usuario = db.relationship('Usuario', backref=db.backref('criancas', lazy=True))
+
+# Modelo para Vacinas Aplicadas
+class VacinaAplicada(db.Model):
+    __tablename__ = 'vacina_aplicada'
+    id = db.Column(db.Integer, primary_key=True)
+    
+    crianca_id = db.Column(db.Integer, db.ForeignKey('crianca.id'), nullable=False)
+    
+    vacina_crianca_id = db.Column(db.Integer, db.ForeignKey('vacina_crianca.id'), nullable=True)
+    vacina_adolescente_id = db.Column(db.Integer, db.ForeignKey('vacina_adolescente.id'), nullable=True)
+    
+    data_aplicacao = db.Column(db.Date, nullable=True)
+    aplicada = db.Column(db.Boolean, default=False)
+
+    # Relacionamentos
+    crianca = db.relationship('Crianca', backref=db.backref('vacinas_aplicadas', lazy=True))
+    vacina_crianca = db.relationship('VacinaCrianca', backref=db.backref('vacinas_aplicadas', lazy=True))
+    vacina_adolescente = db.relationship('VacinaAdolescente', backref=db.backref('vacinas_aplicadas', lazy=True))
+
+    def __repr__(self):
+        return f"<VacinaAplicada(crianca_id={self.crianca_id}, vacina_crianca_id={self.vacina_crianca_id}, vacina_adolescente_id={self.vacina_adolescente_id}, aplicada={self.aplicada})>"

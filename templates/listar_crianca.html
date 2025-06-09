@@ -9,30 +9,46 @@
 <body>
     <div class="container mt-4">
         <h2>Minhas Crianças/Adolescentes</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Data de Nascimento</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for crianca in criancas %}
-                <tr>
-                    <td>{{ crianca.nome }}</td>
-                    <td>{{ crianca.data_nascimento.strftime('%d/%m/%Y') }}</td>
-                    <td>
-                        <a href="{{ url_for('editar_crianca', id=crianca.id) }}" class="btn btn-warning btn-sm">Editar</a>
-                        <form action="{{ url_for('excluir_crianca', id=crianca.id) }}" method="POST" style="display:inline;">
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+
+        <!-- Mensagens flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="table-responsive">
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th>Nome</th>
+                      <th>Data de Nascimento</th>
+                      <th>Ações</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for crianca in criancas %}
+                  <tr>
+                      <td>{{ crianca.nome }}</td>
+                      <td>{{ crianca.data_nascimento.strftime('%d/%m/%Y') }}</td>
+                      <td>
+                          <a href="{{ url_for('editar_crianca', id=crianca.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                          <form action="{{ url_for('excluir_crianca', id=crianca.id) }}" method="POST" style="display:inline;">
+                              <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</button>
+                          </form>
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+        </div>
         <a href="{{ url_for('cadastrar_crianca') }}" class="btn btn-primary">Cadastrar Nova Criança</a>
+        <a href="{{ url_for('painel') }}" class="btn btn-secondary">Voltar ao Painel</a>
     </div>
 </body>
 </html>

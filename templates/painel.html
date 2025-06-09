@@ -5,27 +5,23 @@
     <title>Painel</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script>
-        // Função de confirmação de exclusão
         function confirmarExclusao(event) {
             if (!confirm("Tem certeza que deseja excluir este usuário?")) {
-                event.preventDefault();  // Impede a exclusão se o usuário não confirmar
+                event.preventDefault();
             }
         }
     </script>
 </head>
 <body>
     <div class="container mt-4">
-
-        <!-- Barra de navegação no topo com o botão de logout -->
         <div class="d-flex justify-content-end mb-3">
             {% if 'usuario_id' in session %}
                 <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">Logout</a>
             {% endif %}
         </div>
-      
+
         <h2>Bem-vindo, {{ usuario.nome }}!</h2>
-          
-        <!-- Exibe as mensagens flash, como o "Logout realizado com sucesso!" -->
+
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -35,16 +31,49 @@
                 </div>
             {% endfor %}
         {% endif %}
-    {% endwith %}
-        
-        <!-- Condicional para exibir a mensagem para admin ou usuário comum -->
+        {% endwith %}
+
         {% if 'is_admin' in session and session['is_admin'] %}
             <p>Este é o seu painel de controle e você possui perfil de administrador do sistema.</p>
         {% else %}
             <p>Este é o seu painel de controle.</p>
-        {% endif %}             
-       
-        <!-- Verifica se o usuário é admin e exibe a lista de usuários -->
+
+            <!-- Botão para cadastrar nova criança -->
+            <a href="{{ url_for('cadastrar_crianca') }}" class="btn btn-primary mb-3">Cadastrar Nova Criança</a>
+
+            {% if criancas %}
+                <h3>Crianças/Adolescentes Cadastrados</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Data de Nascimento</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for crianca in criancas %}
+                                <tr>
+                                    <td>{{ crianca.nome }}</td>
+                                    <td>{{ crianca.data_nascimento.strftime('%d/%m/%Y') }}</td>
+                                    <td>
+                                        <a href="{{ url_for('editar_crianca', id=crianca.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                                        <form action="{{ url_for('excluir_crianca', id=crianca.id) }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta criança?')">Excluir</button>
+                                        </form>
+                                        <a href="{{ url_for('gerenciar_vacinas', crianca_id=crianca.id) }}" class="btn btn-info btn-sm mt-1">Gerenciar Vacinas</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>Você ainda não cadastrou nenhuma criança ou adolescente.</p>
+            {% endif %}
+        {% endif %}
+
         {% if 'is_admin' in session and session['is_admin'] %}
             <h3 class="mt-4">Lista de Usuários</h3>
             <table class="table table-striped">
@@ -61,7 +90,6 @@
                             <td>{{ usuario.nome }}</td>
                             <td>{{ usuario.email }}</td>
                             <td>
-                                <!-- Botão para excluir o usuário -->
                                 <form action="{{ url_for('auth.excluir_usuario', usuario_id=usuario.id) }}" method="POST" style="display:inline;">
                                     <button type="submit" class="btn btn-danger mb-5">Excluir</button>
                                 </form>
@@ -70,14 +98,12 @@
                     {% endfor %}
                 </tbody>
             </table>
-        {% else %}
-            <!-- Se não for admin, não exibe a lista de usuários -->
         {% endif %}
-    
-    <!-- Botão para voltar para a home -->
-    <a href="{{ url_for('index') }}" class="btn btn-secondary">Voltar para Home</a>        
+
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Voltar para Home</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
