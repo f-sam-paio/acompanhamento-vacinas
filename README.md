@@ -16,8 +16,8 @@ Este projeto é um sistema web para acompanhamento do calendário de vacinação
 
 - ✅ Cadastro e login de usuários responsáveis (entregue)
 - ✅ Exibição do calendário vacinal conforme faixa etária (SBIm) (entregue)
-- ✅ Cadastro de crianças e adolescentes (Futuro)
-- ✅ Registro de vacinas (Futuro)
+- ✅ Cadastro de crianças e adolescentes (entregue)
+- ✅ Registro de vacinas aplicadas (entregue)
 - ✅ Visualização do histórico de vacinação (Futuro)
 ---
 
@@ -30,11 +30,12 @@ ACOMPANHAMENTO-VACINAS/
 │ ├── cadastrar_vacina.html
 │ ├── editar_crianca.html
 │ ├── editar_vacina.html
+│ ├── gerenciar_vacinas.html
 │ ├── index.html
 │ ├── listar_crianca.html
-│ ├── listar_vacinas.html
-│ ├── listar_vacinas_criancas.html
 │ ├── listar_vacinas_adolescentes.html
+│ ├── listar_vacinas_criancas.html
+│ ├── listar_vacina.html
 │ ├── login.html
 │ ├── painel.html
 │ └── register.html
